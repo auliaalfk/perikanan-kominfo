@@ -77,9 +77,9 @@ CONFIG = {
 }
 
 DB_CONFIG = {
-    'host': 'localhost',
-    'port': 5432,
+    'host': '',
+    'port': ,
     'dbname': 'perikanan_jatim',
-    'user': 'postgres',
-    'password': 'auliahaha',
+    'user': '',
+    'password': '',
 }
