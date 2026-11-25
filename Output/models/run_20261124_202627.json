@@ -1,0 +1,28 @@
+{
+  "waktu": "2026-11-24T20:26:26.991169",
+  "fact": {
+    "baris": 10644,
+    "hash": "4b90133aa1"
+  },
+  "features": {
+    "baris": 228,
+    "hash": "bd27e1cd20",
+    "tahun": [
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ]
+  },
+  "clustering": {
+    "k": 4,
+    "silhouette": 0.35226795213052636
+  },
+  "regresi_utama": {
+    "model": "Volume + komoditas (Ridge)",
+    "cv_r2_mean": 0.9786152493686373,
+    "coef": 0.9737367320548903
+  }
+}

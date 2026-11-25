@@ -1,0 +1,84 @@
+{
+  "dibuat": "2026-11-24T20:40:25.596824",
+  "files": {
+    "produksi_jenis": [
+      {
+        "nama": "Jumlah Produksi Perikanan Budidaya Berdasarkan Jenis Budidaya 2020-2025.xlsx",
+        "ukuran": 77630,
+        "mtime": 1794571123
+      }
+    ],
+    "rtp": [
+      {
+        "nama": "Jumlah RTP (Rumah Tangga Perikanan) 2020-2024.xlsx",
+        "ukuran": 65033,
+        "mtime": 1794571258
+      }
+    ],
+    "luas": [
+      {
+        "nama": "Luas Bersih Lahan Perikanan Budidaya Berdasarkan Jenis Budidaya 2020-2024.xlsx",
+        "ukuran": 64062,
+        "mtime": 1794571460
+      }
+    ],
+    "luas_kkp": [
+      {
+        "nama": "Luas lahan Budidaya 2020-2024.xlsx",
+        "ukuran": 11091,
+        "mtime": 1794571705
+      }
+    ],
+    "bps_kegiatan": [
+      {
+        "nama": "Produksi Perikanan Budidaya Menurut KabupatenKota dan Jenis Kegiatan di Provinsi Jawa Timur 2020-2022.xlsx",
+        "ukuran": 13666,
+        "mtime": 1794572334
+      }
+    ],
+    "bps_nilai": [
+      {
+        "nama": "Volume Produksi dan Nilai Produksi Perikanan Budidaya Menurut KabupatenKota dan Jenis Budidaya di Provinsi Jawa Timur 2023-2024.xlsx",
+        "ukuran": 20876,
+        "mtime": 1794572709
+      }
+    ],
+    "hias": [
+      {
+        "nama": "Produksi Perikanan Budidaya Ikan Hias 2020-2024.xlsx",
+        "ukuran": 78702,
+        "mtime": 1794572008
+      }
+    ],
+    "pembenihan": [
+      {
+        "nama": "Produksi Perikanan Budidaya Pembenihan 2020-2024.xlsx",
+        "ukuran": 34229,
+        "mtime": 1794572484
+      }
+    ],
+    "pembesaran": [
+      {
+        "nama": "Produksi Perikanan Budidaya Pembesaran 2020-2024.xlsx",
+        "ukuran": 86362,
+        "mtime": 1794572635
+      }
+    ],
+    "pembudidaya": [
+      {
+        "nama": "Pembudidaya Ikan 2020-2024.xlsx",
+        "ukuran": 14066,
+        "mtime": 1794571824
+      }
+    ]
+  },
+  "data_hash": "a9938b8fc259",
+  "tahun": [
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ]
+}

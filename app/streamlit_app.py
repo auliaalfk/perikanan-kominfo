@@ -1739,6 +1739,29 @@ if pi == 5:
         if not main_ds:
             main_ds = list(ev.dataset.unique())
         main = main_ds[0]
+
+        # ---- (v3) pembaca keluaran pipeline di folder reports: hanya dipakai bagian tambahan di halaman ini ----
+        def _rep_json(fname):
+            try:
+                from src.config import REPORT_DIR
+                p = Path(REPORT_DIR) / fname
+                return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
+            except Exception:
+                return None
+
+        def _kpi_tip(col, label, text, sub_html, tip, color="#0077B6"):
+            """Kartu KPI seperti kpi2, ditambah ikon (i) dengan penjelasan saat kursor diarahkan."""
+            tip = str(tip).replace("&", "&amp;").replace('"', "&quot;")
+            col.markdown(f'<div class="kpi" style="--c:{color}"><div class="l" title="{tip}" style="cursor:help">{label} <span style="opacity:.65">&#9432;</span></div>'
+                         f'<div class="v">{text}</div><div class="d">{sub_html}</div></div>', unsafe_allow_html=True)
+
+        def _rep_latest_forecast():
+            try:
+                from src.config import REPORT_DIR
+                fs = sorted(Path(REPORT_DIR).glob("forecast_produksi_*.csv"), key=lambda p: int(re.findall(r"(\d{4})", p.stem)[-1]))
+                return pd.read_csv(fs[-1]) if fs else None
+            except Exception:
+                return None
         best = ev[ev.dataset == main].sort_values("cv_r2_mean", ascending=False).iloc[0]
         elastisitas = 1.0
         if "coef" in best.index and pd.notna(best["coef"]):
@@ -1790,6 +1813,9 @@ if pi == 5:
             f"Elastisitas {elastisitas:.2f} adalah estimasi statistik, bukan jaminan kenaikan aktual. "
             f"Model {best['model']} dipilih karena {alasan_model}."
         )
+        _sp = _rep_json("scenario_params.json")
+        if _sp and _sp.get("ci95"):
+            st.caption(f"Selang kepercayaan 95% elastisitas (bootstrap antar-kabupaten): {_sp['ci95'][0]:.2f} - {_sp['ci95'][1]:.2f}.")
 
         if best["cv_r2_mean"] > 0.7:
             st.success("**Temuan Kunci:** Volume produksi adalah faktor **dominan** penentu nilai. "
@@ -1830,6 +1856,117 @@ if pi == 5:
                                       height=320, yaxis_title="Rp", showlegend=False, margin=dict(t=40, b=10))
                 show(fig_sim)
 
+        # ================= (v3) PRAKIRAAN, PROYEKSI, VALIDASI, DAN WILAYAH DI ATAS/BAWAH EKSPEKTASI =================
+        C_AKT, C_DASAR, C_BAND = "#0077B6", "#FB8500", "rgba(251,133,0,0.15)"
+        try:
+            prov = read_report("proyeksi_provinsi.csv")
+            if prov is not None and len(prov) and {"skenario", "tahun", "produksi_ton"} <= set(prov.columns):
+                section("Prakiraan & Proyeksi Produksi", "Tiga skenario pertumbuhan dari sebaran pertumbuhan antar-kabupaten pada data historis.", eyebrow="Beberapa tahun ke depan")
+                pv = prov.pivot(index="tahun", columns="skenario", values="produksi_ton")
+                nv = prov.pivot(index="tahun", columns="skenario", values="nilai_juta_harga_tren") if "nilai_juta_harga_tren" in prov else None
+                th_last, y_end = int(pv.index.min()) - 1, int(pv.index.max())
+                hist = feat.groupby("tahun")["total_pembesaran"].sum(min_count=1).dropna()
+                hist = hist[(hist > 0) & (hist.index <= th_last)]
+                base_v = hist.get(th_last)
+                ks = st.columns(3)
+                _kpi_tip(ks[0], f"Proyeksi {y_end} (skenario dasar)", f"{pv.loc[y_end, 'Dasar'] / 1e6:.2f} jt ton",
+                         f"Tahun dasar {th_last}: {base_v / 1e6:.2f} jt ton" if base_v else "Tahun dasar: n/a",
+                         f"Perkiraan total produksi pembesaran Jawa Timur pada {y_end} jika pertumbuhan tahunan sama dengan rata-rata historis antar-kabupaten (skenario dasar). Satuan juta ton.", "#0077B6")
+                _kpi_tip(ks[1], f"Rentang {y_end}", f"{pv.loc[y_end, 'Pesimis'] / 1e6:.2f} - {pv.loc[y_end, 'Optimis'] / 1e6:.2f} jt ton",
+                         "Skenario pesimis sampai optimis",
+                         "Batas bawah memakai pertumbuhan lambat (kuartil ke-1: 25% kabupaten tumbuh lebih lambat dari ini), batas atas memakai pertumbuhan cepat (kuartil ke-3). Semakin jauh tahunnya, semakin lebar rentangnya.", "#FB8500")
+                tumbuh = (pv["Dasar"].iloc[0] / base_v - 1) * 100 if base_v else None
+                _kpi_tip(ks[2], f"Pertumbuhan {int(pv.index.min())} (dasar)", f"{tumbuh:+.1f}%" if tumbuh is not None else "n/a", "Dibanding tahun dasar",
+                         f"Selisih persen antara proyeksi {int(pv.index.min())} (skenario dasar) dan produksi aktual tahun dasar {th_last}.", "#159468")
+                with st.container(border=True):
+                    panel_title("1", "Produksi pembesaran Jawa Timur: aktual dan proyeksi", "Garis putus-putus = skenario dasar; area = rentang pesimis-optimis.")
+                    fig_p = go.Figure()
+                    if len(hist):
+                        fig_p.add_trace(go.Scatter(x=hist.index, y=hist.values / 1e6, mode="lines+markers", name="Aktual", line=dict(color=C_AKT, width=3)))
+                    xs = ([th_last] if base_v else []) + list(pv.index)
+                    def _ys(sk):
+                        return ([base_v / 1e6] if base_v else []) + list(pv[sk].values / 1e6)
+                    fig_p.add_trace(go.Scatter(x=xs, y=_ys("Pesimis"), mode="lines", name="Pesimis", line=dict(color=C_DASAR, width=1, dash="dot")))
+                    fig_p.add_trace(go.Scatter(x=xs, y=_ys("Optimis"), mode="lines", name="Optimis", line=dict(color=C_DASAR, width=1, dash="dot"), fill="tonexty", fillcolor=C_BAND))
+                    fig_p.add_trace(go.Scatter(x=xs, y=_ys("Dasar"), mode="lines+markers", name="Dasar", line=dict(color=C_DASAR, width=3, dash="dash")))
+                    fig_p.update_layout(title="<b>Produksi Pembesaran Jawa Timur: Aktual dan Proyeksi</b>", height=380, yaxis_title="Juta ton", xaxis=dict(dtick=1), legend=dict(orientation="h", y=-0.2, title=""))
+                    show(fig_p)
+                tbl = pd.DataFrame({"Tahun": list(pv.index)})
+                for sk in ("Pesimis", "Dasar", "Optimis"):
+                    tbl[f"Produksi {sk} (ton)"] = [f"{x:,.0f}" for x in pv[sk].values]
+                if nv is not None:
+                    tbl["Nilai skenario dasar (Rp triliun)"] = [f"{x / 1e6:,.2f}" for x in nv["Dasar"].values]
+                table(tbl)
+                insight(f"<b>Cara membaca:</b> proyeksi memperpanjang tren pertumbuhan historis (random walk dengan drift), bukan ramalan pasti. Ketidakpastian melebar seiring jarak tahun, "
+                        f"sehingga angka {int(pv.index.min()) + 1}-{y_end} sebaiknya dibaca sebagai arah, bukan target. Nilai mengikuti tren harga rata-rata nominal.", warn=True)
+        except Exception as _e:
+            st.caption(f"Bagian proyeksi belum dapat ditampilkan ({type(_e).__name__}).")
+
+        try:
+            fcd = _rep_latest_forecast()
+            pc = [c for c in fcd.columns if c.startswith("prakiraan_")][0] if fcd is not None else None
+            if pc and "aktual_tahun_baru_opendata" in fcd and fcd["aktual_tahun_baru_opendata"].notna().any():
+                ty = int(re.findall(r"(\d{4})", pc)[0])
+                v = fcd.dropna(subset=["aktual_tahun_baru_opendata"]).copy()
+                v["ape"] = (v[pc] - v["aktual_tahun_baru_opendata"]).abs() / v["aktual_tahun_baru_opendata"]
+                cover = ((v["aktual_tahun_baru_opendata"] >= v["batas_bawah_80"]) & (v["aktual_tahun_baru_opendata"] <= v["batas_atas_80"])).mean()
+                tot_d = v[pc].sum() / v["aktual_tahun_baru_opendata"].sum() - 1
+                section(f"Uji Prakiraan Terhadap Data {ty}", f"Prakiraan dibuat hanya dari data sampai {ty - 1}, lalu dibandingkan dengan data {ty} dari OpenData.", eyebrow="Seberapa akurat?")
+                kv = st.columns(3)
+                _kpi_tip(kv[0], "Median selisih per kabupaten", f"{v.ape.median() * 100:.1f}%", f"{len(v)} kabupaten/kota dibandingkan",
+                         "Selisih persen antara prakiraan dan data aktual, dihitung untuk tiap kabupaten/kota lalu diambil nilai tengahnya (median) agar tidak terpengaruh wilayah ekstrem. Makin kecil makin akurat.", "#0077B6")
+                _kpi_tip(kv[1], "Cakupan interval 80%", f"{cover * 100:.0f}%", "Aktual berada di dalam rentang prakiraan",
+                         "Persentase wilayah yang data aktualnya jatuh di dalam rentang prakiraan 80%. Idealnya mendekati 80%: jauh di bawah berarti rentang terlalu sempit (terlalu percaya diri), jauh di atas berarti terlalu lebar.", "#159468")
+                _kpi_tip(kv[2], "Selisih total provinsi", f"{tot_d * 100:+.1f}%", "Prakiraan dibanding data pembanding",
+                         "Selisih persen antara jumlah prakiraan seluruh kabupaten dan jumlah data aktual. Positif = prakiraan lebih tinggi dari aktual; negatif = lebih rendah.", "#FB8500")
+                with st.container(border=True):
+                    panel_title("2", f"Prakiraan vs aktual {ty} per kabupaten/kota", "Titik di garis diagonal = prakiraan tepat; garis vertikal = rentang 80%.")
+                    lim = [float(min(v[pc].min(), v["aktual_tahun_baru_opendata"].min())) * 0.8, float(max(v[pc].max(), v["aktual_tahun_baru_opendata"].max())) * 1.2]
+                    fig_v = go.Figure()
+                    fig_v.add_trace(go.Scatter(x=lim, y=lim, mode="lines", name="Tepat", line=dict(color="#7C93A4", dash="dash")))
+                    fig_v.add_trace(go.Scatter(x=v["aktual_tahun_baru_opendata"], y=v[pc], mode="markers", name="Kabupaten/Kota", text=v["kabupaten"],
+                                               marker=dict(color=C_AKT, size=9),
+                                               error_y=dict(type="data", symmetric=False, array=(v["batas_atas_80"] - v[pc]).clip(lower=0), arrayminus=(v[pc] - v["batas_bawah_80"]).clip(lower=0), thickness=1, width=0),
+                                               hovertemplate="%{text}<br>Aktual: %{x:,.0f} ton<br>Prakiraan: %{y:,.0f} ton<extra></extra>"))
+                    fig_v.update_layout(title=f"<b>Prakiraan vs Aktual {ty} per Kabupaten/Kota</b>", height=420, xaxis_title=f"Aktual {ty} (ton)", yaxis_title=f"Prakiraan {ty} (ton)", xaxis_type="log", yaxis_type="log", showlegend=False)
+                    show(fig_v)
+                st.caption(f"Data pembanding {ty} berasal dari OpenData dan belum tentu final. Sumbu logaritmik agar kabupaten kecil dan besar terbaca bersamaan.")
+                top3 = v.nlargest(3, "ape")
+                n10 = int((v.ape <= 0.10).sum())
+                if cover < 0.70:
+                    nilai_cover = f"lebih rendah dari harapan (sekitar 80%): rentang cenderung terlalu sempit, jadi gunakan batas rentang dengan hati-hati"
+                elif cover > 0.90:
+                    nilai_cover = "lebih tinggi dari harapan (sekitar 80%): rentang cenderung konservatif (lebar)"
+                else:
+                    nilai_cover = "sesuai harapan (sekitar 80%): rentang prakiraan dapat diandalkan sebagai batas wajar"
+                insight(
+                    f"<b>Apa yang bisa disimpulkan dari uji ini?</b><ul style='margin:6px 0 0 18px'>"
+                    f"<li><b>Perencanaan tingkat provinsi:</b> total prakiraan hanya berselisih {abs(tot_d) * 100:.1f}% dari data {ty}, sehingga layak dijadikan acuan awal target dan perencanaan tahun berikutnya.</li>"
+                    f"<li><b>Tingkat kabupaten/kota:</b> selisih tipikal {v.ape.median() * 100:.1f}%, dan {n10} dari {len(v)} wilayah berselisih tidak lebih dari 10%. Gunakan sebagai gambaran awal, bukan target mutlak.</li>"
+                    f"<li><b>Wilayah yang perlu ditinjau:</b> selisih terbesar pada " + ", ".join(f"{r.kabupaten} ({r.ape * 100:.0f}%)" for r in top3.itertuples())
+                    + ". Bisa karena perubahan nyata (musim, kebijakan, investasi) atau data yang masih direvisi; sebaiknya dikonfirmasi ke dinas terkait.</li>"
+                    f"<li><b>Keandalan rentang 80%:</b> {cover * 100:.0f}% wilayah berada di dalam rentang, {nilai_cover}.</li></ul>")
+        except Exception as _e:
+            st.caption(f"Bagian uji prakiraan belum dapat ditampilkan ({type(_e).__name__}).")
+
+        try:
+            rs = read_report("produksi_residual_kab.csv")
+            if rs is not None and len(rs) >= 4 and {"kabupaten", "resid_log"} <= set(rs.columns):
+                section("Wilayah di Atas dan di Bawah Ekspektasi", "Membandingkan produksi aktual dengan produksi yang wajar untuk jumlah pembudidaya, komposisi komoditas, dan habitat wilayah itu.", eyebrow="Analisis struktural")
+                rs = rs.assign(selisih=(np.exp(rs.resid_log) - 1) * 100)
+                n_ = min(6, len(rs) // 2)
+                sel = pd.concat([rs.nsmallest(n_, "resid_log"), rs.nlargest(n_, "resid_log")]).sort_values("selisih")
+                with st.container(border=True):
+                    panel_title("3", "Selisih produksi aktual terhadap ekspektasi (%)", "Kiri = di bawah ekspektasi; kanan = di atas ekspektasi.")
+                    fig_r = go.Figure(go.Bar(x=sel.selisih, y=sel.kabupaten, orientation="h", marker_color=[C_DASAR if x < 0 else C_AKT for x in sel.selisih],
+                                             text=[f"{x:+.0f}%" for x in sel.selisih], textposition="outside", cliponaxis=False))
+                    fig_r.update_layout(title="<b>Selisih Produksi Aktual terhadap Ekspektasi (%)</b>", height=max(320, 34 * len(sel)), xaxis_title="Selisih terhadap ekspektasi (%)", yaxis_title="", showlegend=False)
+                    show(fig_r)
+                insight("<b>Perhatian:</b> ini analisis <i>pembanding antarwilayah</i> (penjelasan), bukan alat prakiraan. Selisih besar bisa berarti peluang peningkatan, "
+                        "tetapi juga bisa karena faktor yang tidak ada di data (mis. teknologi, pakan, atau pelaporan). Gunakan sebagai petunjuk untuk ditelusuri.", warn=True)
+        except Exception as _e:
+            st.caption(f"Bagian wilayah di atas/bawah ekspektasi belum dapat ditampilkan ({type(_e).__name__}).")
+
         with st.expander("Detail Teknis & Perbandingan Model"):
             g_ = ev.assign(Dataset=ev.dataset.map(lambda x: x.replace("_", " ").title()),
                            cv=(ev.cv_r2_mean * 100).round(1))
@@ -1841,6 +1978,28 @@ if pi == 5:
             fig.update_layout(xaxis_title="", legend=dict(orientation="h", y=-0.2, title=""))
             show(fig)
             st.dataframe(ev[["dataset", "model", "cv_r2_mean", "r2_test"]].round(3))
+            _dt = read_report("regression_eval_detail.csv")
+            if _dt is not None and "tugas" in _dt:
+                _m3 = _dt[_dt.tugas.astype(str).str.startswith("M3")]
+                if len(_m3):
+                    subhead("Prakiraan 1 tahun: perbandingan model")
+                    _ket = {
+                        "Naif (tahun lalu)": "Menganggap produksi tahun depan sama dengan tahun ini. Pembanding paling sederhana.",
+                        "Naif + rata-rata pertumbuhan": "Produksi tahun ini ditambah rata-rata pertumbuhan tahunan seluruh kabupaten. Sederhana dan mudah dijelaskan.",
+                        "Ridge pertumbuhan": "Regresi linear yang memperkirakan laju pertumbuhan dari produksi, jumlah pembudidaya, dan keragaman komoditas tahun lalu; dibuat 'hemat' agar tidak berlebihan menyesuaikan data.",
+                        "Huber pertumbuhan": "Mirip Ridge, tetapi lebih tahan terhadap kabupaten dengan nilai ekstrem.",
+                        "RF pertumbuhan": "Random Forest: gabungan banyak pohon keputusan. Menangkap pola non-linear, tetapi butuh data lebih banyak agar stabil.",
+                    }
+                    _tb = _m3.sort_values("medAPE").reset_index(drop=True)
+                    _pil = _tb["terpilih"].astype(str).str.lower().isin(["true", "1"]) if "terpilih" in _tb else pd.Series(False, index=_tb.index)
+                    table(pd.DataFrame({
+                        "Model": _tb["model"], "Penjelasan singkat": _tb["model"].map(lambda x: _ket.get(x, "-")),
+                        "Median selisih": [f"{x * 100:.2f}%" for x in _tb["medAPE"]],
+                        "R² (skala asli)": [f"{x:.3f}" for x in _tb["R2_asli"]] if "R2_asli" in _tb else "-",
+                        "Dipakai": ["✓" if p else "" for p in _pil]}))
+                    st.caption("**Median selisih** = selisih persen tipikal antara prakiraan dan data aktual pada pengujian bergulir (model dilatih hanya dengan data sebelum tahun yang diuji); makin kecil makin baik. "
+                               "**R²** hampir selalu mendekati 1 pada deret produksi karena produksi tahun ini sangat mirip tahun lalu, jadi pembeda yang lebih bermakna adalah median selisih. "
+                               "**Aturan pemilihan:** model machine learning dipakai hanya jika setidaknya 10% lebih akurat daripada baseline sederhana; jika tidak, baseline dipakai karena sama akurat dan lebih mudah dijelaskan.")
             if mv is not None and len(mv):
                 subhead("Riwayat versi model")
                 st.dataframe(mv.tail(10))

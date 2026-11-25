@@ -1,0 +1,9 @@
+sumber,masalah,bukti,tindakan
+produksi_jenis,tahun 2021 berskala x1000,"median log10 rasio=2.98, IQR=0.04 (seragam di semua kabupaten)",dikalikan 0.001
+produksi_jenis,tahun 2024 tidak_konsisten,zero_share=71%; median log10 rasio ke tahun lain=-2.99; IQR=1.56,tahun dijadikan NaN (bukan 0)
+rtp,tahun 2024 salinan tahun 2022,"nilai identik di hampir semua kabupaten, padahal pasangan tahun lain jarang identik","tahun -> NaN (is_stale, is_missing_year)"
+luas,luas tercampur angka RTP,52 baris nilai == RTP pada kabupaten-jenis-tahun yang sama,baris -> NaN + is_suspect_scale
+luas_opendata,tahun 2024 tidak_konsisten,zero_share=74%; median log10 rasio ke tahun lain=-1.09; IQR=1.05,tahun dijadikan NaN (bukan 0)
+luas_opendata,lonjakan baris tunggal,5 baris,baris -> NaN + is_suspect_scale; tahun & kabupaten lain tetap dipakai
+pembenihan_nilai,tahun 2024 berskala x0.001,"median log10 rasio=-2.98, IQR=0.18 (seragam di semua kabupaten)",dikalikan 1000
+pembudidaya,lonjakan melawan median kabupaten sendiri,5 titik,nilai -> NaN + is_suspect_scale (tidak ada angka karangan di fact)

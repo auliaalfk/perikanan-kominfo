@@ -1,0 +1,19 @@
+{
+  "set": "B",
+  "k": 4,
+  "silhouette": 0.35226795213052636,
+  "fitur": [
+    "l_produksi",
+    "l_pembudidaya",
+    "l_harga",
+    "shannon",
+    "h_kolam",
+    "h_tambak"
+  ],
+  "khusus": [
+    "Sumenep"
+  ],
+  "n_klaster_tampil": 5,
+  "min_size": 5,
+  "tidak_diklaster": []
+}

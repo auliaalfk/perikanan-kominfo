@@ -1,0 +1,18 @@
+level,sumber,tahun,pesan
+INFO,produksi_jenis,,"7 kode kembar Kab/Kota dipisahkan (kemunculan pertama = Kabupaten): Blitar, Kediri, Madiun, Malang, Mojokerto, Pasuruan, Probolinggo"
+WARN,produksi_jenis,2021.0,tahun 2021 berskala x1000 -> dikalikan 0.001
+WARN,produksi_jenis,2024.0,"tahun 2024 tidak_konsisten (zero_share=71%, median_log10=-2.99) -> NaN"
+WARN,rtp,2024.0,tahun 2024 salinan tahun 2022 (>= 90% kabupaten identik) -> NaN
+INFO,luas,,"7 kode kembar Kab/Kota dipisahkan (kemunculan pertama = Kabupaten): Blitar, Kediri, Madiun, Malang, Mojokerto, Pasuruan, Probolinggo"
+WARN,luas,,"52 baris luas persis sama dengan RTP -> NaN (per tahun: {2021: np.int64(5), 2022: np.int64(47)})"
+WARN,luas_opendata,2024.0,"tahun 2024 tidak_konsisten (zero_share=74%, median_log10=-1.09) -> NaN"
+WARN,luas_opendata,,5 baris lonjakan > 50x median barisnya sendiri -> NaN (tahun & baris lain tetap dipakai)
+INFO,luas_kkp,,"terbaca: 50 baris, kolom luas=['Luas Lahan Budi Daya'], kolom jenis=Jenis Usaha, tahun=[np.int64(2020), np.int64(2021), np.int64(2022), np.int64(2023), np.int64(2024)]"
+INFO,luas_kkp,2020.0,tahun 2020 tak terverifikasi (pembanding < 2 tahun)
+INFO,luas_kkp,2021.0,tahun 2021 tak terverifikasi (pembanding < 2 tahun)
+INFO,luas_kkp,2022.0,tahun 2022 tak terverifikasi (pembanding < 2 tahun)
+INFO,luas_kkp,2023.0,tahun 2023 tak terverifikasi (pembanding < 2 tahun)
+INFO,luas_kkp,2024.0,tahun 2024 tak terverifikasi (pembanding < 2 tahun)
+INFO,hias,,910 baris non-JAWA TIMUR dibuang
+WARN,pembenihan_nilai,2024.0,tahun 2024 berskala x0.001 -> dikalikan 1000
+WARN,pembudidaya,,5 titik > 3x / < 1/3x median kabupatennya -> NaN + is_suspect_scale (features.py mengisi dengan median kabupaten)

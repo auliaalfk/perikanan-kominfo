@@ -1,0 +1,12 @@
+{
+  "elastisitas": 0.9737367320548903,
+  "ci95": [
+    0.959008087447161,
+    0.9899678815861258
+  ],
+  "tahun_dasar": 2024,
+  "base_nilai_juta": 19791862.0,
+  "base_produksi_ton": 1392701.5599999998,
+  "cv_r2_M1": 0.9786152493686373,
+  "rumus": "nilai_baru = nilai_dasar * (1 + delta)^elastisitas"
+}

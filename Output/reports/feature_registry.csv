@@ -1,0 +1,6 @@
+fitur,kab_cover,row_cover,tahun_valid,usable_cluster,usable_panel
+pembudidaya,1.0,1.0,"2020, 2021, 2022, 2023, 2024",True,True
+rtp,1.0,0.8,"2020, 2021, 2022, 2023",True,True
+luas_lahan_ha,0.079,0.063,"2020, 2021, 2022, 2023, 2024",False,False
+harga_rp_kg,1.0,1.0,"2020, 2021, 2022, 2023, 2024",True,True
+produksi_media_ton,1.0,0.8,"2020, 2021, 2022, 2023",True,True

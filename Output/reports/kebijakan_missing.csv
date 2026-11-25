@@ -1,0 +1,7 @@
+variabel,kondisi,perlakuan,catatan
+Produksi/nilai pembesaran (KKP),audit tahun generik,skala dikoreksi; tahun tak lengkap/tak konsisten -> NaN,baris tak ada = komoditas tak dibudidayakan (0 struktural)
+Produksi per jenis (opendata),"nol = belum lapor, skala, kab/kota kembar",koreksi skala / NaN; kembar dipisah generik,total provinsi dari KKP
+Pembudidaya,lonjakan >3x median kab,diganti median kab sendiri,kabupaten tetap ikut
+RTP,salinan antar tahun,tahun salinan -> NaN,dipakai bila cakupan cukup
+Luas lahan,campur data RTP / lonjakan / tahun nol,diperbaiki per baris & tahun; KKP diutamakan,"tahun rusak -> NaN, TIDAK dibuang seluruhnya"
+Pembenihan / ikan hias,skala & tahun rusak,tahun rusak -> NaN; ringkas dgn median antar tahun valid,kabupaten tak tercatat = 0 struktural

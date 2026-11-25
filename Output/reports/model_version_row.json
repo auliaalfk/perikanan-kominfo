@@ -1,0 +1,6 @@
+{
+  "data_hash": "a9938b8fc259",
+  "model_name": "M1:Volume + komoditas (Ridge)",
+  "cv_r2": 0.9786152493686373,
+  "notes": "M1 Nilai ~ volume + komoditas: CV-R2 0.979 (volume saja 0.928); elastisitas 0.97 (CI 0.96-0.99). | M2 Produksi struktural (S1 pembudidaya | Ridge): CV-R2 0.602, median APE 78% - EXPLANATORY (membandingkan kabupaten), TIDAK cocok untuk prediksi titik. | M3 Prakiraan 1 tahun: Naif + rata-rata pertumbuhan; median APE rolling-origin 2.8%. model ML tidak mengungguli baseline >= 10% (2.891% vs 2.779%) -> baseline (lebih sederhana, sama akurat). | Validasi 2025 (opendata): median APE 2.3% pada 38 kabupaten. | Proyeksi produksi Jatim (skenario dasar): 2025 1,445,989; 2026 1,501,316; 2027 1,558,759 ton. Elastisitas simulator 0.97."
+}

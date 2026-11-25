@@ -1,0 +1,33 @@
+{
+  "mulai": "2026-11-24T20:40:22.895431",
+  "selesai": "2026-11-24T20:42:22.863699",
+  "status": "sukses",
+  "langkah": [
+    {
+      "langkah": "cleaning",
+      "status": "ok",
+      "detik": 2.7,
+      "baris": 10644,
+      "kolom": 13
+    },
+    {
+      "langkah": "fitur",
+      "status": "ok",
+      "detik": 0.2,
+      "baris": 228,
+      "kolom": 31
+    },
+    {
+      "langkah": "clustering",
+      "status": "ok",
+      "detik": 16.5,
+      "k_opt": 4,
+      "silhouette": 0.35226795213052636
+    },
+    {
+      "langkah": "regresi",
+      "status": "ok",
+      "detik": 100.5
+    }
+  ]
+}
