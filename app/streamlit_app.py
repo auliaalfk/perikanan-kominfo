@@ -74,6 +74,8 @@ MODE_REPLACE = "Ganti seluruh data (hanya upload)"
 PAGES = ["Beranda Utama", "Peta", "Tipologi Wilayah", "Komoditas & Nilai", "Profil Wilayah",
          "Analisis Regresi", "Upload Data", "Metadata"]
 PAGE_ICONS = ["wave", "map", "grid", "fish", "pin", "chart", "upload", "book"]
+NAV_ICONS = [":material/home:", ":material/map:", ":material/category:", ":material/water_drop:",
+             ":material/location_city:", ":material/analytics:", ":material/upload:", ":material/menu_book:"]
 HERO = [("Ringkasan Perikanan Budidaya Jawa Timur", "Ringkasan umum kondisi perikanan budidaya melalui indikator utama, perkembangan produksi, dan kontribusi wilayah di Jawa Timur."),
         ("Peta Sebaran Wilayah", "Menampilkan persebaran produksi, nilai ekonomi, dan karakteristik perikanan budidaya pada setiap kabupaten dan kota di Jawa Timur."),
         ("Tipologi Wilayah", "Mengelompokkan kabupaten dan kota di Jawa Timur berdasarkan kemiripan karakteristik dan indikator perikanan budidaya."),
@@ -146,10 +148,6 @@ def theme_css(css):
 
 
 # ============================================================ STYLE
-_NAV_ICONS = "\n".join(
-    f'[data-testid="stSidebar"] [role="radiogroup"]:has(> label:nth-child(8)) > label:nth-child({i + 1})::before '
-    f'{{ -webkit-mask-image: {_mask(n)}; mask-image: {_mask(n)}; }}' for i, n in enumerate(PAGE_ICONS))
-
 _STYLE = r"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
@@ -198,46 +196,25 @@ section[data-testid="stSidebar"] > div, section[data-testid="stSidebar"] > div >
 .sb-brand b { display: block; font: 700 14px/1.3 Manrope, sans-serif; color: #fff !important; }
 .sb-brand small { display: block; font-size: 11px; color: rgba(255,255,255,.65) !important; margin-top: 2px; }
 .nav-label { text-transform: uppercase; letter-spacing: .14em; font-size: .62rem; font-weight: 700; color: rgba(255,255,255,.5) !important; margin: 16px 12px 6px; }
-[data-testid="stSidebar"] [role="radiogroup"] { gap: 4px !important; }
-[data-testid="stSidebar"] [role="radiogroup"] > label { background: transparent !important; border: 0 !important; border-radius: 9px !important;
-    padding: 0 12px !important; min-height: 43px; width: 100% !important; margin: 0 !important; display: flex !important; align-items: center !important;
-    gap: 11px !important; position: relative; cursor: pointer; transition: background .15s ease; }
-[data-testid="stSidebar"] [role="radiogroup"] > label > div:first-child:not([data-testid]) { display: none !important; }
-[data-testid="stSidebar"] [role="radiogroup"] > label p, [data-testid="stSidebar"] [role="radiogroup"] > label span,
-[data-testid="stSidebar"] [role="radiogroup"] > label div { background: transparent !important; color: rgba(255,255,255,.74) !important;
-    font-size: .84rem !important; font-weight: 600 !important; line-height: 1.3 !important; margin: 0 !important; }
-[data-testid="stSidebar"] [role="radiogroup"] > label:hover { background: rgba(255,255,255,.08) !important; }
-[data-testid="stSidebar"] [role="radiogroup"] > label:hover * { color: #fff !important; }
-[data-testid="stSidebar"] [role="radiogroup"] > label:has(input:checked) { background: linear-gradient(90deg, rgba(82,213,232,.28), rgba(255,255,255,.11)) !important;
-    box-shadow: inset -3px 0 0 #71E0EC; }
-[data-testid="stSidebar"] [role="radiogroup"] > label:has(input:checked) * { color: #fff !important; }
-[data-testid="stSidebar"] [role="radiogroup"]:has(> label:nth-child(8)) > label::before { content: ""; flex: none; width: 19px; height: 19px;
-    background: rgba(255,255,255,.74); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center;
-    -webkit-mask-size: contain; mask-size: contain; }
-[data-testid="stSidebar"] [role="radiogroup"]:has(> label:nth-child(8)) > label:hover::before,
-[data-testid="stSidebar"] [role="radiogroup"]:has(> label:nth-child(8)) > label:has(input:checked)::before { background: #fff; }
-__NAV_ICONS__
-/* pengalih tema (segmented) */
-[data-testid="stSidebar"] [role="radiogroup"]:not(:has(> label:nth-child(3))) { display: grid !important; grid-template-columns: 1fr 1fr; gap: 0 !important;
-    padding: 3px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.07); border-radius: 9px; margin-bottom: 4px; }
-[data-testid="stSidebar"] [role="radiogroup"]:not(:has(> label:nth-child(3))) > label { min-height: 31px !important; justify-content: center !important;
-    padding: 0 !important; border-radius: 6px !important; }
-[data-testid="stSidebar"] [role="radiogroup"]:not(:has(> label:nth-child(3))) > label:has(input:checked) { background: #fff !important; box-shadow: 0 2px 8px rgba(0,0,0,.15) !important; }
-[data-testid="stSidebar"] [role="radiogroup"]:not(:has(> label:nth-child(3))) > label:has(input:checked) * { color: #064B70 !important; }
 .side-status { background: rgba(0,20,40,.22) !important; border: 1px solid rgba(255,255,255,.1) !important; padding: 14px; border-radius: 10px; margin-top: 18px; }
 .side-status .ss-h { display: flex; align-items: center; gap: 7px; font-size: .68rem; font-weight: 700; color: #A8F0E3 !important; margin-bottom: 10px; }
 .live-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #35D39A; box-shadow: 0 0 0 3px rgba(53,211,154,.13); }
 .side-status p { display: flex; justify-content: space-between; gap: 10px; font-size: .7rem; margin: 6px 0 0; color: rgba(255,255,255,.55) !important; }
 .side-status p b { color: rgba(255,255,255,.92) !important; font-weight: 700; text-align: right; }
-[data-testid="stSidebar"] .stButton > button { background: transparent !important; color: rgba(255,255,255,.8) !important;
+[data-testid="stSidebar"] .st-key-to_landing button { background: transparent !important; color: rgba(255,255,255,.8) !important;
     border: 1px solid rgba(255,255,255,.18) !important; font-size: .78rem !important; font-weight: 600 !important; justify-content: flex-start; }
-[data-testid="stSidebar"] .stButton > button:hover { background: rgba(255,255,255,.08) !important; }
+[data-testid="stSidebar"] .st-key-to_landing button:hover { background: rgba(255,255,255,.08) !important; }
 section[data-testid="stSidebar"] .stButton button, section[data-testid="stSidebar"] .stButton button * { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; font-size: .8rem !important; font-weight: 600 !important; }
 
 /* ---------- input ---------- */
 div[data-baseweb="select"] > div, div[data-baseweb="input"] > div, div[data-baseweb="base-input"] {
     background-color: __INPUT_BG__ !important; border: 1px solid __INPUT_BD__ !important; border-radius: 8px !important; }
 div[data-baseweb="select"] * { color: __INPUT_TX__ !important; }
+[data-testid="stSelectbox"] [data-baseweb="select"] > div {
+    background-color: __INPUT_BG__ !important; border-color: __INPUT_BD__ !important; }
+[data-testid="stSelectbox"] [data-baseweb="select"] > div * {
+    background-color: transparent !important; color: __INPUT_TX__ !important; -webkit-text-fill-color: __INPUT_TX__ !important; }
+[data-testid="stSelectbox"] [data-baseweb="select"] svg { color: __INPUT_TX__ !important; fill: __INPUT_TX__ !important; }
 ul[data-testid="stSelectboxVirtualDropdown"] { background-color: __INPUT_BG__ !important; }
 ul[data-testid="stSelectboxVirtualDropdown"] li { color: __INPUT_TX__ !important; }
 button[kind="pills"] { background-color: __INPUT_BG__ !important; color: __INPUT_TX__ !important; border: 1px solid __INPUT_BD__ !important; }
@@ -258,6 +235,16 @@ div[data-baseweb="popover"] li:hover, div[data-baseweb="popover"] li[aria-select
     border-radius: 10px !important; font-weight: 700 !important; min-height: 2.6rem; }
 .stButton > button p, .stDownloadButton > button p { color: inherit !important; font-weight: 700 !important; }
 .stButton > button:hover { filter: brightness(1.08); }
+[data-testid="stSidebar"] [class*="st-key-side_nav_"] button { background: transparent !important; border: 0 !important;
+    border-radius: 10px !important; min-height: 44px !important; justify-content: flex-start !important;
+    padding: 0 14px !important; text-align: left !important; color: rgba(255,255,255,.82) !important; }
+[data-testid="stSidebar"] [class*="st-key-side_nav_"] button:hover { background: rgba(255,255,255,.08) !important; filter: none; }
+__ACTIVE_NAV__
+[data-testid="stSidebar"] [class*="st-key-theme_"] button { background: rgba(255,255,255,.07) !important;
+    border: 1px solid rgba(255,255,255,.16) !important; border-radius: 9px !important;
+    min-height: 36px !important; color: rgba(255,255,255,.88) !important; -webkit-text-fill-color: rgba(255,255,255,.88) !important; }
+__ACTIVE_THEME__
+.theme-label { color: rgba(255,255,255,.64) !important; font-size: .68rem; font-weight: 600; margin: 4px 0 6px; }
 .stDownloadButton > button { background: transparent !important; color: __ACCENT__ !important; border: 1px solid __ACCENT__ !important; }
 .stDownloadButton > button:hover { background: __INSIGHT_BG__ !important; filter: none; }
 
@@ -386,7 +373,17 @@ __DF_DARK__
 </style>
 """
 _df_dark = "[data-testid='stDataFrame'] > div { filter: invert(.92) hue-rotate(180deg); }" if S["theme"] == "dark" else ""
-st.markdown(theme_css(_STYLE.replace("__NAV_ICONS__", _NAV_ICONS).replace("__DF_DARK__", _df_dark)
+_nav_name = S.get("nav", PAGES[0])
+_nav_idx = PAGES.index(_nav_name) if _nav_name in PAGES else 0
+_active_nav_css = (f'[data-testid="stSidebar"] .st-key-side_nav_{_nav_idx} button {{'
+                   ' background: linear-gradient(90deg, rgba(69,197,223,.24), rgba(255,255,255,.08)) !important;'
+                   ' border: 1px solid rgba(69,197,223,.24) !important;'
+                   ' box-shadow: inset 3px 0 0 #45C5DF !important; color: #FFFFFF !important; }')
+_active_theme_css = (f'[data-testid="stSidebar"] .st-key-theme_{S["theme"]} button {{'
+                     ' background: #007EA8 !important; border-color: #45C5DF !important;'
+                     ' color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }')
+st.markdown(theme_css(_STYLE.replace("__ACTIVE_NAV__", _active_nav_css).replace("__ACTIVE_THEME__", _active_theme_css)
+                      .replace("__DF_DARK__", _df_dark)
                       .replace("__SCHEME__", "dark" if S["theme"] == "dark" else "light")), unsafe_allow_html=True)
 
 
@@ -556,9 +553,15 @@ def sim_head(title, desc, chip=""):
 
 
 def toggle_theme():
-    n = "light" if S["theme"] == "dark" else "dark"
-    S["theme"] = n
-    S["theme_radio"] = n
+    S["theme"] = "light" if S["theme"] == "dark" else "dark"
+
+
+def select_theme(name):
+    S["theme"] = name
+
+
+def select_page(name):
+    S["nav"] = name
 
 
 def clean_fact(df):
@@ -1070,12 +1073,21 @@ if not S["entered"]:
 with st.sidebar:
     st.markdown(f'<div class="sb-brand"><div class="sb-mark">{svg("fish", 22)}</div><div><b>Perikanan Jatim</b>'
                 '<small>Dashboard Budidaya</small></div></div>', unsafe_allow_html=True)
-    S["theme_radio"] = S["theme"]  # selalu sinkron dengan tema aktif (juga setelah diubah dari landing)
-    st.radio("Tampilan", ["light", "dark"], format_func=lambda x: "Light" if x == "light" else "Dark",
-             horizontal=True, key="theme_radio", label_visibility="collapsed",
-             on_change=lambda: S.update(theme=S["theme_radio"]))
+    st.markdown('<div class="theme-label">Mode tampilan</div>', unsafe_allow_html=True)
+    theme_cols = st.columns(2, gap="small")
+    for col, name, label in ((theme_cols[0], "light", "Light"), (theme_cols[1], "dark", "Dark")):
+        active = S["theme"] == name
+        col.button(f"✓ {label}" if active else label, key=f"theme_{name}", icon=f":material/{'light_mode' if name == 'light' else 'dark_mode'}:",
+                   help=f"Aktifkan mode {label.lower()}", width="stretch", type="tertiary",
+                   on_click=select_theme, args=(name,))
     st.markdown('<div class="nav-label">Menu utama</div>', unsafe_allow_html=True)
-    page = st.radio("Menu", PAGES, label_visibility="collapsed", key="nav")
+    if S.get("nav") not in PAGES:
+        S["nav"] = PAGES[0]
+    for i, (name, icon) in enumerate(zip(PAGES, NAV_ICONS)):
+        st.button(name, key=f"side_nav_{i}", icon=icon, width="stretch",
+                  type="tertiary",
+                  on_click=select_page, args=(name,))
+    page = S["nav"]
     st.markdown(f'<div class="side-status"><div class="ss-h"><span class="live-dot"></span>Data tersinkronisasi</div>'
                 f'<p><span>Sumber</span><b>{base_src}</b></p>'
                 f'<p><span>Tahun data</span><b>{(str(years[0]) + "–" + str(years[-1])) if years else "-"}</b></p>'
@@ -1428,6 +1440,19 @@ if pi == 2:
                    + (f'Komoditas dominan: <b>{" & ".join(CL["domin"][i])}</b><br>' if CL["domin"].get(i) else "")
                    + f'<span class="na">Contoh: {contoh}</span>')
             kpi2(col, names[i], f"{len(g)} wilayah", sub, CAT_LIVELY[i % len(CAT_LIVELY)], pad=7, compact=True)
+        largest_id = CL["sizes"].idxmax()
+        volume_col = next((c for c in ("total_pembesaran", "produksi_ton")
+                           if c in CL["prof"] and CL["prof"][c].notna().any()), None)
+        if volume_col:
+            top_volume_id = CL["prof"][volume_col].idxmax()
+            volume_label = "produksi pembesaran" if volume_col == "total_pembesaran" else "produksi menurut media"
+            insight(
+                f"<b>Ringkasan untuk perencanaan:</b> Tipologi <b>{names[largest_id]}</b> memuat wilayah terbanyak "
+                f"({int(CL['sizes'].loc[largest_id])} dari {n_cl}, {CL['sizes'].loc[largest_id] / n_cl:.0%}). "
+                f"Rata-rata {volume_label} per wilayah tertinggi pada <b>{names[top_volume_id]}</b> "
+                f"({human(CL['prof'].loc[top_volume_id, volume_col], unit='ton')}). "
+                "Gunakan ini sebagai segmentasi awal, bukan sebagai peringkat kinerja atau bukti sebab-akibat."
+            )
         l, r = st.columns(2)
         with l:
             M = d.assign(tahun=ty).copy()
@@ -1453,27 +1478,39 @@ if pi == 2:
                 st.info("Komposisi komoditas belum tersedia untuk tahun ini.")
         pf = CL["prof"].copy()
         pf.index = [names[i] for i in pf.index]
-        lg = pf.reset_index(names="Tipologi").melt(id_vars="Tipologi", var_name="v", value_name="Rata-rata")
-        lg["v"] = lg.v.map({"produksi_ton": "Produksi (ton)", "total_pembesaran": "Pembesaran (ton)",
-                            "pembudidaya": "Pembudidaya (orang)", "rtp": "RTP", "luas_lahan_ha": "Luas lahan (ha)"})
         l3, r3 = st.columns([1, 2])
+        chart_height = max(520, 76 * len(ids))
         with l3:
             cnt = pd.DataFrame({"Tipologi": [names[i] for i in ids], "Wilayah": [int(CL["sizes"][i]) for i in ids]})
-            fig = px.pie(cnt, names="Tipologi", values="Wilayah", hole=.56, height=520, color="Tipologi",
+            fig = px.pie(cnt, names="Tipologi", values="Wilayah", hole=.56, height=chart_height, color="Tipologi",
                          color_discrete_map=cmap, title="<b>Proporsi Wilayah per Tipologi</b>")
             fig.update_traces(textinfo="value+percent", textfont=dict(size=13, color="white"),
                               marker=dict(line=dict(color=T["card_bg"], width=2)))
             fig.update_layout(legend=dict(orientation="h", y=-0.1, title=""))
             show(fig)
         with r3:
-            fig = px.bar(lg, x="Tipologi", y="Rata-rata", color="Tipologi", facet_col="v", facet_col_wrap=3,
-                         color_discrete_map=cmap, height=520,
-                         title="<b>Karakter Tiap Tipologi</b><br><sup>rata-rata per wilayah (satuan asli)</sup>")
-            fig.update_yaxes(matches=None, showticklabels=True, title="")
-            fig.update_xaxes(showticklabels=False, title="")
-            fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
-            fig.update_layout(showlegend=False)
-            show(fig)
+            profile_cols = [c for c in ("produksi_ton", "total_pembesaran", "pembudidaya", "rtp", "luas_lahan_ha")
+                            if c in pf and c in d and d[c].notna().any()]
+            province_avg = d[profile_cols].mean() if profile_cols else pd.Series(dtype=float)
+            profile_cols = [c for c in profile_cols if pd.notna(province_avg[c]) and province_avg[c] > 0]
+            if profile_cols:
+                index = pf[profile_cols].div(province_avg[profile_cols], axis="columns") * 100
+                metric_names = {"produksi_ton": "Produksi media", "total_pembesaran": "Pembesaran",
+                                "pembudidaya": "Pembudidaya", "rtp": "RTP", "luas_lahan_ha": "Luas lahan"}
+                index.columns = [metric_names[c] for c in profile_cols]
+                text = [[f"{v:.0f}" if pd.notna(v) else "n/a" for v in row] for row in index.to_numpy()]
+                fig = go.Figure(go.Heatmap(
+                    z=index.to_numpy(), x=index.columns.tolist(), y=index.index.tolist(),
+                    text=text, texttemplate="%{text}",
+                    colorscale=[[0, "#2166AC"], [1 / 3, "#F7F7F7"], [1, "#B2182B"]],
+                    zmin=0, zmax=300, colorbar=dict(title="Indeks (%)", tickvals=[0, 100, 200, 300]),
+                    hovertemplate="Tipologi: %{y}<br>Indikator: %{x}<br>Indeks: %{z:.0f}<extra></extra>"))
+                fig.update_layout(
+                    title="<b>Profil relatif tiap tipologi</b><br><sup>100 = rata-rata provinsi; warna dibatasi hingga 300, angka tetap nilai aktual</sup>",
+                    xaxis_title="", yaxis_title="", height=chart_height)
+                show(fig)
+            else:
+                st.info("Perbandingan profil belum tersedia karena rata-rata indikator tidak dapat dihitung.")
         section(f"Anggota Tipologi {ty}", "Daftar kabupaten/kota beserta tipologi dan indikator utamanya.")
         mem = d.sort_values(["klaster", vk], ascending=[True, False]).copy()
         out = pd.DataFrame({"Kabupaten/Kota": mem.kabupaten.values, "Tipologi": mem.label_klaster.values})
@@ -1486,19 +1523,22 @@ if pi == 2:
             st.markdown("**Wilayah belum terklasifikasi:** " + ", ".join(CL["uncl"]))
         with st.expander("Detail metodologi (untuk analis)"):
             ev = read_report("clustering_eval.csv")
-            if ev is not None and "silhouette" in ev:
-                best = ev.loc[ev.silhouette.idxmax()]
+            if ev is not None and "silhouette" in ev and not ev.empty:
+                selected = ev[ev.dipilih.fillna(False)] if "dipilih" in ev else pd.DataFrame()
+                best = selected.iloc[0] if not selected.empty else ev.loc[ev.silhouette.idxmax()]
                 c = st.columns(3)
                 c[0].metric("Jumlah tipologi (k)", int(best["k"]))
                 c[1].metric("Silhouette", f"{best['silhouette']:.3f}", help=">0.5 kuat, 0.25–0.5 sedang, <0.25 lemah")
                 c[2].metric("Wilayah-tahun terklasifikasi", len(clu))
                 fig = go.Figure(go.Scatter(x=ev.k, y=ev.silhouette, mode="lines+markers", line=dict(color="#0077B6", width=3)))
+                fig.add_vline(x=int(best["k"]), line_dash="dash", line_color="#E76F51",
+                              annotation_text=f"k terpilih = {int(best['k'])}", annotation_position="top")
                 fig.update_layout(title="<b>Pemilihan k (silhouette)</b>", xaxis_title="k", yaxis_title="silhouette", height=320)
                 show(fig)
             else:
                 st.caption("Metrik evaluasi klasterisasi belum tersedia.")
-            st.caption("Metode: variabel distandarkan, direduksi dengan PCA 2 dimensi, lalu dikelompokkan dengan K-Means. "
-                       "Nama tipologi ditentukan oleh aturan ambang pada proses klasterisasi.")
+            st.caption("Metode: fitur distandarkan lalu dikelompokkan dengan K-Means. PCA 2 dimensi hanya untuk visualisasi; "
+                       "nama tipologi mengikuti aturan pelabelan pada proses klasterisasi.")
 
 
 # ============================================================ 4. KOMODITAS & NILAI
