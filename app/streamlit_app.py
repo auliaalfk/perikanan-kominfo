@@ -2,6 +2,7 @@ import re
 import sys
 import json
 from pathlib import Path
+from html import escape as _esc
 import streamlit.components.v1 as components
 
 import numpy as np
@@ -258,6 +259,25 @@ div[data-baseweb="popover"] li:hover, div[data-baseweb="popover"] li[aria-select
     border-radius: 10px !important; font-weight: 700 !important; min-height: 2.6rem; }
 .stButton > button p, .stDownloadButton > button p { color: inherit !important; font-weight: 700 !important; }
 .stButton > button:hover { filter: brightness(1.08); }
+<<<<<<< Updated upstream
+=======
+[data-testid="stSidebar"] [class*="st-key-side_nav_"] button { background: transparent !important; border: 0 !important;
+    border-radius: 10px !important; min-height: 44px !important; justify-content: flex-start !important;
+    padding: 0 14px !important; text-align: left !important; color: rgba(255,255,255,.82) !important; }
+[data-testid="stSidebar"] [class*="st-key-side_nav_"] button:hover { background: rgba(255,255,255,.08) !important; filter: none; }
+__ACTIVE_NAV__
+[data-testid="stSidebar"] [data-testid="stHorizontalBlock"]:has([class*="st-key-theme_"]) { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.16);
+    border-radius: 12px; padding: 4px; gap: 4px !important; }
+[data-testid="stSidebar"] [class*="st-key-theme_"] button { background: transparent !important; border: 0 !important; border-radius: 9px !important;
+    min-height: 36px !important; box-shadow: none !important; color: rgba(255,255,255,.72) !important; }
+__ACTIVE_THEME__
+/* ikon menu: SVG sebagai mask (tidak bergantung pada font ikon) */
+[data-testid="stSidebar"] [class*="st-key-side_nav_"] button::before { content: ""; flex: none; width: 20px; height: 20px; margin-right: 14px;
+    background-color: rgba(255,255,255,.88); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center;
+    -webkit-mask-size: contain; mask-size: contain; }
+__NAV_ICONS__
+.theme-label { color: rgba(255,255,255,.64) !important; font-size: .68rem; font-weight: 600; margin: 4px 0 6px; }
+>>>>>>> Stashed changes
 .stDownloadButton > button { background: transparent !important; color: __ACCENT__ !important; border: 1px solid __ACCENT__ !important; }
 .stDownloadButton > button:hover { background: __INSIGHT_BG__ !important; filter: none; }
 
@@ -271,6 +291,17 @@ div[data-baseweb="popover"] li:hover, div[data-baseweb="popover"] li[aria-select
 .kpi .v { font: 800 1.35rem Manrope, sans-serif; color: __HEADING__ !important; margin: 6px 0 4px; }
 .kpi .d { font-size: .76rem; font-weight: 600; line-height: 1.5; color: __TEXT__ !important; }
 .kpi .d b { color: __HEADING__ !important; font-weight: 800; }
+/* KPI dengan tooltip (ikon i): tooltip murni CSS, muncul saat kursor/fokus di ikon, tidak bergantung komponen bawaan Streamlit */
+.kpi.kt { position: relative; }
+.kpi.kt .l { min-height: 0; margin-bottom: 2px; display: flex; align-items: flex-start; gap: 6px; }
+.kpi.kt .tp { position: static; flex: none; display: inline-flex; margin-top: -1px; color: __TEXT_MUTED__ !important; cursor: help; outline: none; }
+.kpi.kt .tp svg { width: 15px; height: 15px; }
+.kpi.kt .tp:hover, .kpi.kt .tp:focus { color: __ACCENT__ !important; }
+.kpi.kt .tt { visibility: hidden; opacity: 0; pointer-events: none; position: absolute; left: 10px; right: 10px; top: calc(100% - 4px); z-index: 999;
+    padding: 10px 12px; border-radius: 9px; background: __CARD_BG__; color: __TEXT__ !important; border: 1px solid __CARD_BORDER__;
+    box-shadow: 0 12px 30px rgba(8,30,50,.22); font: 500 .78rem/1.55 'DM Sans', sans-serif; letter-spacing: 0; text-transform: none; text-align: left;
+    transition: opacity .12s ease; }
+.kpi.kt .tp:hover .tt, .kpi.kt .tp:focus .tt { visibility: visible; opacity: 1; }
 /* baris 6 kartu KPI (Beranda): padat, rapi, tinggi seragam (muat sampai 4 baris teks) */
 [data-testid="stHorizontalBlock"]:has(> [data-testid="stColumn"]:nth-child(6)) .kpi,
 [data-testid="stHorizontalBlock"]:has(> [data-testid="column"]:nth-child(6)) .kpi { height: 148px; padding: 12px 14px; display: flex; flex-direction: column; justify-content: center; }
@@ -346,7 +377,6 @@ __DF_DARK__
 .ft { display: flex; align-items: center; gap: 8px; font-size: .78rem; font-weight: 700; color: __HEADING__ !important; margin: 0 0 6px; }
 .ft svg { color: __ACCENT__ !important; }
 .pt { display: flex; gap: 10px; align-items: flex-start; margin: 0 0 18px; }
-.pt > span { flex: none; width: 24px; height: 24px; border-radius: 7px; display: flex; align-items: center; justify-content: center; background: __IC_BG__; color: __IC_FG__ !important; font-weight: 800; font-size: .75rem; }
 .pt b { display: block; font: 700 .95rem Manrope, sans-serif; color: __HEADING__ !important; line-height: 1.25; }
 .pt small { display: block; font-size: .76rem; color: __TEXT_MUTED__ !important; margin-top: 3px; line-height: 1.35; }
 .lead { font-size: .92rem; line-height: 1.55; color: __TEXT_MUTED__ !important; margin: 4px 0 14px; max-width: 820px; }
@@ -376,17 +406,49 @@ __DF_DARK__
 /* ---------- kartu metodologi ---------- */
 .mg { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; margin: 4px 0 18px; }
 .mc { display: flex; gap: 14px; align-items: flex-start; padding: 20px; background: __CARD_BG__; border: 1px solid __CARD_BORDER__; border-radius: 12px; }
-.mc .mn { flex: none; width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: __IC_BG__; color: __IC_FG__ !important; font: 800 .8rem Manrope, sans-serif; }
 .mc b { display: block; font: 700 .98rem Manrope, sans-serif; color: __HEADING__ !important; margin: 2px 0 6px; line-height: 1.3; }
 .mc p { margin: 0; font-size: .86rem; line-height: 1.6; color: __TEXT_MUTED__ !important; }
 .mc p i, .mc p b { color: inherit !important; display: inline; font-size: inherit; margin: 0; font-family: inherit; }
+/* Dasar kegiatan statistik (Romantik BPS) */
+.rks-b { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; padding: 20px 22px; margin: 6px 0 20px; border-radius: 14px;
+    background: __INSIGHT_BG__; border: 1px solid __INSIGHT_BD__; border-left: 4px solid __INSIGHT_BR__; }
+.rks-b .ri { flex: none; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: __IC_BG__; color: __IC_FG__ !important; }
+.rks-b .rt { flex: 1 1 320px; min-width: 0; }
+.rks-b .eb { font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; color: __ACCENT__ !important; }
+.rks-b b { display: block; font: 700 1.02rem/1.35 Manrope, sans-serif; color: __HEADING__ !important; margin: 3px 0 6px; }
+.rks-b p { margin: 0; font-size: .84rem; line-height: 1.55; color: __TEXT__ !important; }
+.rks-b .rc { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.rks-b .rc span { padding: 3px 11px; border-radius: 14px; background: __CARD_BG__; border: 1px solid __INSIGHT_BD__; font-size: .72rem; font-weight: 600; color: __HEADING__ !important; }
+a.rks-btn { flex: none; display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 10px; background: __ACCENT__; color: __BTN_TX__ !important;
+    font-weight: 700; font-size: .84rem; text-decoration: none !important; white-space: nowrap; }
+a.rks-btn:hover { filter: brightness(1.08); }
+a.rks-btn svg { color: __BTN_TX__ !important; }
+.rks-lnk { color: __ACCENT__ !important; font-weight: 700; text-decoration: none; }
 
 /* ---------- footer ---------- */
 .dfoot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 48px; padding-top: 18px; border-top: 1px solid __CARD_BORDER__; font-size: .72rem; color: __TEXT_MUTED__ !important; }
 </style>
 """
 _df_dark = "[data-testid='stDataFrame'] > div { filter: invert(.92) hue-rotate(180deg); }" if S["theme"] == "dark" else ""
+<<<<<<< Updated upstream
 st.markdown(theme_css(_STYLE.replace("__NAV_ICONS__", _NAV_ICONS).replace("__DF_DARK__", _df_dark)
+=======
+_nav_name = S.get("nav", PAGES[0])
+_nav_idx = PAGES.index(_nav_name) if _nav_name in PAGES else 0
+_active_nav_css = (f'[data-testid="stSidebar"] .st-key-side_nav_{_nav_idx} button {{'
+                   ' background: linear-gradient(90deg, rgba(69,197,223,.24), rgba(255,255,255,.08)) !important;'
+                   ' border: 1px solid rgba(69,197,223,.24) !important;'
+                   ' box-shadow: inset -3px 0 0 #45C5DF !important; color: #FFFFFF !important; }')
+_nav_icons_css = "".join(f'[data-testid="stSidebar"] .st-key-side_nav_{i} button::before {{ -webkit-mask-image: {_mask(ic)}; mask-image: {_mask(ic)}; }}\n'
+                         for i, ic in enumerate(PAGE_ICONS))
+_active_theme_css = (f'[data-testid="stSidebar"] .st-key-theme_{S["theme"]} button {{'
+                     ' background: #FFFFFF !important; box-shadow: 0 2px 8px rgba(0,0,0,.18) !important; }'
+                     f'section[data-testid="stSidebar"] .st-key-theme_{S["theme"]} .stButton button, '
+                     f'section[data-testid="stSidebar"] .st-key-theme_{S["theme"]} .stButton button * {{'
+                     ' color: #07456A !important; -webkit-text-fill-color: #07456A !important; }')
+st.markdown(theme_css(_STYLE.replace("__ACTIVE_NAV__", _active_nav_css).replace("__ACTIVE_THEME__", _active_theme_css)
+                      .replace("__DF_DARK__", _df_dark).replace("__NAV_ICONS__", _nav_icons_css)
+>>>>>>> Stashed changes
                       .replace("__SCHEME__", "dark" if S["theme"] == "dark" else "light")), unsafe_allow_html=True)
 
 
@@ -525,11 +587,6 @@ def section(title, desc=None, eyebrow=None):
     """Subjudul bagian yang seragam di semua halaman."""
     st.markdown('<div class="sh">' + (f'<div class="eb">{eyebrow}</div>' if eyebrow else "") + f'<h3>{title}</h3>'
                 + (f'<p>{desc}</p>' if desc else "") + '</div>', unsafe_allow_html=True)
-
-
-def panel_title(no, title, desc=""):
-    st.markdown(f'<div class="pt"><span>{no}</span><div><b>{title}</b>' + (f'<small>{desc}</small>' if desc else "")
-                + '</div></div>', unsafe_allow_html=True)
 
 
 def lead(txt):
@@ -952,8 +1009,12 @@ def open_page(page=None):
 def landing():
     # Warna hero mengikuti tema (tidak lagi biru penuh)
     _dark = S["theme"] == "dark"
-    _hero_bg = "linear-gradient(135deg,#0F2236 0%,#0B2A40 100%)" if _dark else "linear-gradient(135deg,#FFFFFF 0%,#E4F5F9 100%)"
-    _hero_orb = "rgba(69,197,223,.10)" if _dark else "rgba(0,119,168,.08)"
+    _hero_bg = "linear-gradient(135deg,#12324E 0%,#0C3E5C 100%)" if _dark else "linear-gradient(135deg,#D9EEF8 0%,#BFE0F1 100%)"
+    _hero_orb = "rgba(69,197,223,.12)" if _dark else "rgba(255,255,255,.45)"
+    _hero_bd = "#24506E" if _dark else "#A9D2E6"
+    _hero_ac = "#6FD6EA" if _dark else "#00557A"       # aksen (kicker, sorotan judul, tombol garis): kontras >= 4.5:1 di atas latar hero
+    _hero_tx = "#D5E4EF" if _dark else "#17324D"       # paragraf: lebih gelap/terang dari warna redup agar jelas di latar biru
+    _hero_chip = "rgba(255,255,255,.08)" if _dark else "rgba(255,255,255,.7)"
     _W = '[data-testid="stVerticalBlockBorderWrapper"]'
     _css = """<style>
     [data-testid="stSidebar"], [data-testid="stSidebarCollapsedControl"], [data-testid="collapsedControl"] { display:none !important; }
@@ -969,21 +1030,21 @@ def landing():
         border:1px solid __CARD_BORDER__ !important; min-height:2.3rem; font-size:.8rem; box-shadow:none; }
     /* hero */
     [data-testid="stElementContainer"]:has(.lh-m) { display:none; }
-    __W__:has(.lh-m):not(:has(__W__ .lh-m)) { border:1px solid __CARD_BORDER__ !important; border-radius:22px; padding:52px 56px 48px; position:relative; overflow:hidden;
+    __W__:has(.lh-m):not(:has(__W__ .lh-m)) { border:1px solid __HERO_BD__ !important; border-radius:22px; padding:52px 56px 48px; position:relative; overflow:hidden;
         background:__HERO_BG__ !important; box-shadow:0 14px 40px rgba(14,70,95,.07); }
     __W__:has(.lh-m):not(:has(__W__ .lh-m))::before { content:""; position:absolute; width:380px; height:380px; border-radius:50%; right:-90px; top:-120px; background:__HERO_ORB__; pointer-events:none; }
     __W__:has(.lh-m):not(:has(__W__ .lh-m)) .stButton > button { min-height:2.8rem; font-size:.86rem; border-radius:10px !important; }
     __W__:has(.lh-m):not(:has(__W__ .lh-m)) [data-testid="stColumn"]:nth-child(1) .stButton > button,
-    __W__:has(.lh-m):not(:has(__W__ .lh-m)) [data-testid="column"]:nth-child(1) .stButton > button { background:#F4744A !important; color:#FFFFFF !important; border:0 !important; box-shadow:0 8px 20px rgba(244,116,74,.28); }
+    __W__:has(.lh-m):not(:has(__W__ .lh-m)) [data-testid="column"]:nth-child(1) .stButton > button { background:#CC4814 !important; color:#FFFFFF !important; border:0 !important; box-shadow:0 8px 20px rgba(204,72,20,.28); }
     __W__:has(.lh-m):not(:has(__W__ .lh-m)) [data-testid="stColumn"]:nth-child(2) .stButton > button,
-    __W__:has(.lh-m):not(:has(__W__ .lh-m)) [data-testid="column"]:nth-child(2) .stButton > button { background:transparent !important; color:__ACCENT__ !important; border:1px solid __ACCENT__ !important; box-shadow:none; }
-    .lh-kick { display:flex; align-items:center; gap:10px; font-size:.7rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:__ACCENT__ !important; }
-    .lh-kick i { width:24px; height:2px; background:__ACCENT__; display:inline-block; }
+    __W__:has(.lh-m):not(:has(__W__ .lh-m)) [data-testid="column"]:nth-child(2) .stButton > button { background:transparent !important; color:__HERO_AC__ !important; border:1px solid __HERO_AC__ !important; box-shadow:none; }
+    .lh-kick { display:flex; align-items:center; gap:10px; font-size:.7rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:__HERO_AC__ !important; }
+    .lh-kick i { width:24px; height:2px; background:__HERO_AC__; display:inline-block; }
     .lh-copy h1 { font:800 clamp(2rem,3.4vw,3.2rem)/1.12 Manrope,sans-serif !important; letter-spacing:-.035em; margin:16px 0 !important; padding:0 !important; color:__HEADING__ !important; max-width:860px; }
-    .lh-copy h1 em { font-style:normal; color:__ACCENT__ !important; }
-    .lh-copy p { max-width:700px; color:__TEXT_MUTED__ !important; font-size:1rem; line-height:1.7; margin:0 0 16px; }
+    .lh-copy h1 em { font-style:normal; color:__HERO_AC__ !important; }
+    .lh-copy p { max-width:700px; color:__HERO_TX__ !important; font-size:1rem; line-height:1.7; margin:0 0 16px; }
     .lh-tags { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 22px; }
-    .lh-tags span { background:__IC_BG__; border:1px solid __CARD_BORDER__; padding:4px 13px; border-radius:20px; font-size:.76rem; font-weight:600; color:__IC_FG__ !important; }
+    .lh-tags span { background:__HERO_CHIP__; border:1px solid __HERO_BD__; padding:4px 13px; border-radius:20px; font-size:.76rem; font-weight:600; color:__HERO_AC__ !important; }
     /* seksi */
     .lsec { margin:52px 0 20px; }
     .lsec .lab { font-size:.66rem; text-transform:uppercase; letter-spacing:.18em; font-weight:800; color:__ACCENT__ !important; }
@@ -1002,7 +1063,6 @@ def landing():
     /* proses */
     .lp { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
     .lp > div { position:relative; min-height:190px; padding:24px; background:__CARD_BG__; border:1px solid __CARD_BORDER__; border-radius:14px; box-sizing:border-box; }
-    .lp .no { position:absolute; right:20px; top:16px; font:700 .7rem Manrope,sans-serif; color:__NA__ !important; }
     .lp .pi { color:__ACCENT__ !important; margin-bottom:18px; }
     .lp h3 { font:700 1rem/1.3 Manrope,sans-serif !important; color:__HEADING__ !important; margin:0 0 6px !important; padding:0 !important; }
     .lp p { font-size:.84rem; line-height:1.55; color:__TEXT_MUTED__ !important; margin:0; }
@@ -1011,7 +1071,8 @@ def landing():
     @media (max-width:1000px){ .lp{grid-template-columns:1fr 1fr;} }
     @media (max-width:560px){ .lp{grid-template-columns:1fr;} .fc{height:auto; min-height:150px;} __W__:has(.lh-m):not(:has(__W__ .lh-m)){padding:30px 22px;} }
     </style>"""
-    _css = _css.replace("__W__", _W).replace("__HERO_BG__", _hero_bg).replace("__HERO_ORB__", _hero_orb)
+    _css = (_css.replace("__W__", _W).replace("__HERO_BG__", _hero_bg).replace("__HERO_ORB__", _hero_orb)
+            .replace("__HERO_BD__", _hero_bd).replace("__HERO_AC__", _hero_ac).replace("__HERO_TX__", _hero_tx).replace("__HERO_CHIP__", _hero_chip))
     st.markdown(theme_css(_css), unsafe_allow_html=True)
 
     n1, n2 = st.columns([5, 1.3])
@@ -1051,8 +1112,8 @@ def landing():
               ("chart", "Analisis Data", "Mengidentifikasi karakteristik wilayah melalui klasterisasi K-Means dan menganalisis hubungan antarvariabel menggunakan regresi."),
               ("grid", "Visualisasi Data", "Menyajikan hasil pengolahan dalam bentuk grafik, peta interaktif, dan informasi yang diperbarui berdasarkan data terbaru.")]
     st.markdown('<div class="lp">' + "".join(
-        f'<div><span class="no">0{i}</span><div class="pi">{svg(ic, 24)}</div><h3>{t_}</h3><p>{d_}</p></div>'
-        for i, (ic, t_, d_) in enumerate(_steps, 1)) + '</div>', unsafe_allow_html=True)
+        f'<div><div class="pi">{svg(ic, 24)}</div><h3>{t_}</h3><p>{d_}</p></div>'
+        for ic, t_, d_ in _steps) + '</div>', unsafe_allow_html=True)
 
     chips = "".join(f'<a href="{SUMBER[k]}" target="_blank">{n}</a>' if k in SUMBER else f"<span>{n}</span>" for k, n in SRC_NAME.items())
     st.markdown(f'<div class="lsec"><div class="lab">Sumber data</div><h2>Bersumber dari lembaga resmi</h2></div><div class="chips">{chips}</div>',
@@ -1070,12 +1131,30 @@ if not S["entered"]:
 with st.sidebar:
     st.markdown(f'<div class="sb-brand"><div class="sb-mark">{svg("fish", 22)}</div><div><b>Perikanan Jatim</b>'
                 '<small>Dashboard Budidaya</small></div></div>', unsafe_allow_html=True)
+<<<<<<< Updated upstream
     S["theme_radio"] = S["theme"]  # selalu sinkron dengan tema aktif (juga setelah diubah dari landing)
     st.radio("Tampilan", ["light", "dark"], format_func=lambda x: "Light" if x == "light" else "Dark",
              horizontal=True, key="theme_radio", label_visibility="collapsed",
              on_change=lambda: S.update(theme=S["theme_radio"]))
     st.markdown('<div class="nav-label">Menu utama</div>', unsafe_allow_html=True)
     page = st.radio("Menu", PAGES, label_visibility="collapsed", key="nav")
+=======
+    st.markdown('<div class="theme-label">Mode tampilan</div>', unsafe_allow_html=True)
+    theme_cols = st.columns(2, gap="small")
+    for col, name, label in ((theme_cols[0], "light", "Light"), (theme_cols[1], "dark", "Dark")):
+        active = S["theme"] == name
+        sbtn(col, label, key=f"theme_{name}",
+             help=f"Aktifkan mode {label.lower()}", type="tertiary",
+             on_click=select_theme, args=(name,))
+    st.markdown('<div class="nav-label">Menu utama</div>', unsafe_allow_html=True)
+    if S.get("nav") not in PAGES:
+        S["nav"] = PAGES[0]
+    for i, name in enumerate(PAGES):
+        sbtn(st, name, key=f"side_nav_{i}",
+             type="tertiary",
+             on_click=select_page, args=(name,))
+    page = S["nav"]
+>>>>>>> Stashed changes
     st.markdown(f'<div class="side-status"><div class="ss-h"><span class="live-dot"></span>Data tersinkronisasi</div>'
                 f'<p><span>Sumber</span><b>{base_src}</b></p>'
                 f'<p><span>Tahun data</span><b>{(str(years[0]) + "–" + str(years[-1])) if years else "-"}</b></p>'
@@ -1750,10 +1829,16 @@ if pi == 5:
                 return None
 
         def _kpi_tip(col, label, text, sub_html, tip, color="#0077B6"):
-            """Kartu KPI seperti kpi2, ditambah ikon (i) dengan penjelasan saat kursor diarahkan."""
-            tip = str(tip).replace("&", "&amp;").replace('"', "&quot;")
-            col.markdown(f'<div class="kpi" style="--c:{color}"><div class="l" title="{tip}" style="cursor:help">{label} <span style="opacity:.65">&#9432;</span></div>'
-                         f'<div class="v">{text}</div><div class="d">{sub_html}</div></div>', unsafe_allow_html=True)
+            """Kartu KPI dengan ikon i; penjelasan lengkap (tip) muncul saat kursor diarahkan ke ikon. Keterangan singkat tampil permanen di bawah angka."""
+            sub = re.sub(r"<[^>]+>", " ", str(sub_html)).strip()
+            col.markdown(f'<div class="kpi kt" style="--c:{color or "#0077B6"}"><div class="l"><span>{_esc(str(label))}</span>'
+                         f'<span class="tp" tabindex="0" role="button" aria-label="Penjelasan {_esc(str(label))}">{svg("info", 15)}'
+                         f'<span class="tt">{_esc(str(tip))}</span></span></div>'
+                         f'<div class="v">{_esc(str(text))}</div><div class="d">{_esc(sub)}</div></div>', unsafe_allow_html=True)
+
+        def _pt(title, desc=""):
+            """Judul panel tanpa nomor."""
+            st.markdown(f'<div class="pt"><div><b>{title}</b>' + (f'<small>{desc}</small>' if desc else "") + '</div></div>', unsafe_allow_html=True)
 
         def _rep_latest_forecast():
             try:
@@ -1833,7 +1918,7 @@ if pi == 5:
         col_s1, col_s2 = st.columns([1, 2])
         with col_s1:
             with st.container(border=True):
-                panel_title("1", "Tentukan skenario", "Geser slider untuk mengubah asumsi kenaikan volume.")
+                _pt("Tentukan skenario", "Geser slider untuk mengubah asumsi kenaikan volume.")
                 kenaikan = st.slider("Kenaikan Volume Produksi (%)", 0, 100, 10, step=5)
                 _yn = max(VALID["nilai_rp_juta"], default=None)
                 nilai_now = feat[feat.tahun == _yn]["nilai_rp_juta"].sum(skipna=True) * 1e6 if _yn else 0
@@ -1844,7 +1929,7 @@ if pi == 5:
                 st.caption("*Estimasi kasar berdasarkan elastisitas model; hasil nyata dapat berbeda.")
         with col_s2:
             with st.container(border=True):
-                panel_title("2", "Hasil proyeksi", "Perbandingan nilai produksi saat ini dengan hasil simulasi.")
+                _pt("Hasil proyeksi")
                 fig_sim = go.Figure(go.Bar(
                     x=["Nilai Saat Ini", f"Simulasi (+{kenaikan}%)"],
                     y=[nilai_now, nilai_new],
@@ -1852,7 +1937,7 @@ if pi == 5:
                     textposition="outside",
                     marker_color=["#0077B6", "#FB8500"],
                 ))
-                fig_sim.update_layout(title="<b>Perbandingan Nilai Produksi (Simulasi)</b>",
+                fig_sim.update_layout(title=f"<b>Nilai produksi{f' tahun {_yn}' if _yn else ''} dan simulasinya</b><br><sup>kenaikan volume {kenaikan}% × elastisitas {elastisitas:.2f}</sup>",
                                       height=320, yaxis_title="Rp", showlegend=False, margin=dict(t=40, b=10))
                 show(fig_sim)
 
@@ -1879,17 +1964,21 @@ if pi == 5:
                 _kpi_tip(ks[2], f"Pertumbuhan {int(pv.index.min())} (dasar)", f"{tumbuh:+.1f}%" if tumbuh is not None else "n/a", "Dibanding tahun dasar",
                          f"Selisih persen antara proyeksi {int(pv.index.min())} (skenario dasar) dan produksi aktual tahun dasar {th_last}.", "#159468")
                 with st.container(border=True):
-                    panel_title("1", "Produksi pembesaran Jawa Timur: aktual dan proyeksi", "Garis putus-putus = skenario dasar; area = rentang pesimis-optimis.")
+                    _pt(f"Arah produksi hingga {y_end}")
                     fig_p = go.Figure()
                     if len(hist):
-                        fig_p.add_trace(go.Scatter(x=hist.index, y=hist.values / 1e6, mode="lines+markers", name="Aktual", line=dict(color=C_AKT, width=3)))
+                        fig_p.add_trace(go.Scatter(x=hist.index, y=hist.values / 1e6, mode="lines+markers", name="Aktual", line=dict(color=C_AKT, width=3),
+                                                   hovertemplate="%{x}<br>Aktual: %{y:.2f} jt ton<extra></extra>"))
                     xs = ([th_last] if base_v else []) + list(pv.index)
                     def _ys(sk):
                         return ([base_v / 1e6] if base_v else []) + list(pv[sk].values / 1e6)
-                    fig_p.add_trace(go.Scatter(x=xs, y=_ys("Pesimis"), mode="lines", name="Pesimis", line=dict(color=C_DASAR, width=1, dash="dot")))
-                    fig_p.add_trace(go.Scatter(x=xs, y=_ys("Optimis"), mode="lines", name="Optimis", line=dict(color=C_DASAR, width=1, dash="dot"), fill="tonexty", fillcolor=C_BAND))
-                    fig_p.add_trace(go.Scatter(x=xs, y=_ys("Dasar"), mode="lines+markers", name="Dasar", line=dict(color=C_DASAR, width=3, dash="dash")))
-                    fig_p.update_layout(title="<b>Produksi Pembesaran Jawa Timur: Aktual dan Proyeksi</b>", height=380, yaxis_title="Juta ton", xaxis=dict(dtick=1), legend=dict(orientation="h", y=-0.2, title=""))
+                    fig_p.add_trace(go.Scatter(x=xs, y=_ys("Pesimis"), mode="lines", name="Pesimis", legendgroup="rentang", showlegend=False, line=dict(color=C_DASAR, width=1, dash="dot"),
+                                               hovertemplate="%{x}<br>Pesimis: %{y:.2f} jt ton<extra></extra>"))
+                    fig_p.add_trace(go.Scatter(x=xs, y=_ys("Optimis"), mode="lines", name="Rentang pesimis–optimis", legendgroup="rentang", line=dict(color=C_DASAR, width=1, dash="dot"), fill="tonexty", fillcolor=C_BAND,
+                                               hovertemplate="%{x}<br>Optimis: %{y:.2f} jt ton<extra></extra>"))
+                    fig_p.add_trace(go.Scatter(x=xs, y=_ys("Dasar"), mode="lines+markers", name="Skenario dasar", line=dict(color=C_DASAR, width=3, dash="dash"),
+                                               hovertemplate="%{x}<br>Skenario dasar: %{y:.2f} jt ton<extra></extra>"))
+                    fig_p.update_layout(title=f"<b>Total produksi pembesaran, {int(hist.index.min()) if len(hist) else int(pv.index.min())}–{y_end}</b><br><sup>juta ton per tahun · tahun {int(pv.index.min())} dst. adalah proyeksi</sup>", height=380, yaxis_title="Juta ton", xaxis=dict(dtick=1), legend=dict(orientation="h", y=-0.2, title=""))
                     show(fig_p)
                 tbl = pd.DataFrame({"Tahun": list(pv.index)})
                 for sk in ("Pesimis", "Dasar", "Optimis"):
@@ -1920,7 +2009,7 @@ if pi == 5:
                 _kpi_tip(kv[2], "Selisih total provinsi", f"{tot_d * 100:+.1f}%", "Prakiraan dibanding data pembanding",
                          "Selisih persen antara jumlah prakiraan seluruh kabupaten dan jumlah data aktual. Positif = prakiraan lebih tinggi dari aktual; negatif = lebih rendah.", "#FB8500")
                 with st.container(border=True):
-                    panel_title("2", f"Prakiraan vs aktual {ty} per kabupaten/kota", "Titik di garis diagonal = prakiraan tepat; garis vertikal = rentang 80%.")
+                    _pt("Seberapa dekat prakiraan dengan kenyataan?", "Titik di garis diagonal = prakiraan tepat; garis vertikal = rentang 80%.")
                     lim = [float(min(v[pc].min(), v["aktual_tahun_baru_opendata"].min())) * 0.8, float(max(v[pc].max(), v["aktual_tahun_baru_opendata"].max())) * 1.2]
                     fig_v = go.Figure()
                     fig_v.add_trace(go.Scatter(x=lim, y=lim, mode="lines", name="Tepat", line=dict(color="#7C93A4", dash="dash")))
@@ -1928,7 +2017,7 @@ if pi == 5:
                                                marker=dict(color=C_AKT, size=9),
                                                error_y=dict(type="data", symmetric=False, array=(v["batas_atas_80"] - v[pc]).clip(lower=0), arrayminus=(v[pc] - v["batas_bawah_80"]).clip(lower=0), thickness=1, width=0),
                                                hovertemplate="%{text}<br>Aktual: %{x:,.0f} ton<br>Prakiraan: %{y:,.0f} ton<extra></extra>"))
-                    fig_v.update_layout(title=f"<b>Prakiraan vs Aktual {ty} per Kabupaten/Kota</b>", height=420, xaxis_title=f"Aktual {ty} (ton)", yaxis_title=f"Prakiraan {ty} (ton)", xaxis_type="log", yaxis_type="log", showlegend=False)
+                    fig_v.update_layout(title=f"<b>Prakiraan vs Aktual {ty} (ton, skala log)</b>", height=420, xaxis_title=f"Aktual {ty} (ton)", yaxis_title=f"Prakiraan {ty} (ton)", xaxis_type="log", yaxis_type="log", showlegend=False)
                     show(fig_v)
                 st.caption(f"Data pembanding {ty} berasal dari OpenData dan belum tentu final. Sumbu logaritmik agar kabupaten kecil dan besar terbaca bersamaan.")
                 top3 = v.nlargest(3, "ape")
@@ -1957,7 +2046,7 @@ if pi == 5:
                 n_ = min(6, len(rs) // 2)
                 sel = pd.concat([rs.nsmallest(n_, "resid_log"), rs.nlargest(n_, "resid_log")]).sort_values("selisih")
                 with st.container(border=True):
-                    panel_title("3", "Selisih produksi aktual terhadap ekspektasi (%)", "Kiri = di bawah ekspektasi; kanan = di atas ekspektasi.")
+                    _pt("Wilayah mana yang menyimpang dari ekspektasi?", "Kiri = di bawah ekspektasi; kanan = di atas ekspektasi.")
                     fig_r = go.Figure(go.Bar(x=sel.selisih, y=sel.kabupaten, orientation="h", marker_color=[C_DASAR if x < 0 else C_AKT for x in sel.selisih],
                                              text=[f"{x:+.0f}%" for x in sel.selisih], textposition="outside", cliponaxis=False))
                     fig_r.update_layout(title="<b>Selisih Produksi Aktual terhadap Ekspektasi (%)</b>", height=max(320, 34 * len(sel)), xaxis_title="Selisih terhadap ekspektasi (%)", yaxis_title="", showlegend=False)
@@ -2106,8 +2195,57 @@ if pi == 6:
 # ============================================================ 8. METADATA
 if pi == 7:
     hero(7)
-    t_kamus, t_sumber, t_ada, t_met = st.tabs(["Kamus Data", "Sumber Data", "Ketersediaan Data", "Metodologi & Catatan"])
+    RKS_URL = "https://romantik.web.bps.go.id/rekomendasi-terbit/Q3pvdXdaUUJEWW5acDlDMFgrTXFjUT09"
+    RKS_JUDUL = "Survei Data Produksi Perikanan Budidaya Provinsi Jawa Timur Tahun 2026"
+    st.markdown(
+        f'<div class="rks-b"><div class="ri">{svg("book", 22)}</div><div class="rt"><div class="eb">Dasar kegiatan statistik</div>'
+        f'<b>{RKS_JUDUL}</b>'
+        '<p>Dashboard ini sejalan dengan Rancangan Kegiatan Statistik Dinas Kelautan dan Perikanan Provinsi Jawa Timur '
+        'yang telah memperoleh rekomendasi BPS melalui sistem Romantik.</p>'
+        '<div class="rc"><span>Identitas rekomendasi V-26.3500.011</span><span>Terbit 02 Maret 2026</span><span>Cara pengumpulan: survei</span></div></div>'
+        f'<a class="rks-btn" href="{RKS_URL}" target="_blank" rel="noopener noreferrer">Buka di Romantik BPS {svg("arrow", 16)}</a></div>',
+        unsafe_allow_html=True)
+    t_rks, t_kamus, t_sumber, t_ada, t_met = st.tabs(["Dasar Kegiatan", "Kamus Data", "Sumber Data", "Ketersediaan Data", "Metodologi & Catatan"])
     nw = lambda m: int(feat_raw.loc[feat_raw[m].fillna(0) > 0, "kabupaten"].nunique()) if m in feat_raw else 0
+    with t_rks:
+        lead("Rancangan Kegiatan Statistik (RKS) sektoral yang menjadi landasan penyelenggaraan data produksi perikanan budidaya di Jawa Timur. "
+             f'Dokumen resmi dan rinciannya tersedia di <a class="rks-lnk" href="{RKS_URL}" target="_blank" rel="noopener noreferrer">Romantik BPS</a>.')
+        _cards = [
+            ("Penyelenggara", "Dinas Kelautan dan Perikanan Provinsi Jawa Timur. Penanggung jawab teknis: Kepala Bidang Perikanan Budidaya."),
+            ("Tujuan kegiatan", "Memperoleh data yang akurat dan perkembangan data statistik pembudidaya perikanan di Jawa Timur."),
+            ("Desain kegiatan", "Berulang, frekuensi bulanan, bertipe <i>cross sectional</i>, dengan cakupan sebagian wilayah Indonesia."),
+            ("Desain sampel", "Bertahap banyak (<i>multi stage</i>), <i>stratified random sampling</i> dengan kerangka <i>list frame</i>; "
+                              "unit sampel pembudidaya perikanan, unit observasi rumah tangga perikanan."),
+            ("Pengumpulan data", "Wawancara tatap muka berbasis kertas (PAPI) oleh 38 enumerator staf instansi penyelenggara, "
+                                 "didahului pelatihan petugas dan diperiksa melalui supervisi."),
+            ("Pengolahan dan analisis", "Penyuntingan, <i>data entry</i>, dan validasi; analisis deskriptif; hasil disajikan di tingkat nasional, provinsi, dan kabupaten/kota."),
+            ("Diseminasi", "Produk tersedia untuk umum dalam bentuk cetak dan digital. Data mikro tidak disediakan."),
+        ]
+        st.markdown('<div class="mg">' + "".join(f'<div class="mc"><div><b>{t_}</b><p>{d_}</p></div></div>' for t_, d_ in _cards) + '</div>',
+                    unsafe_allow_html=True)
+        subhead("Jadwal kegiatan")
+        table(pd.DataFrame([
+            ("Perencanaan dan persiapan", "05 Januari 2026", "09 Januari 2026"),
+            ("Pelaksanaan lapangan", "16 Februari 2026", "31 Desember 2026"),
+            ("Pengolahan", "05 Maret 2026", "31 Desember 2026"),
+            ("Analisis", "06 Maret 2026", "31 Desember 2026"),
+            ("Penyajian", "31 Agustus 2027", "30 September 2027"),
+        ], columns=["Tahap", "Mulai", "Selesai"]))
+        subhead("Variabel yang dikumpulkan")
+        table(pd.DataFrame([
+            ("Rumah Tangga Perikanan (RTP)", "Rumah tangga yang membudidayakan ikan untuk dijual sebagian atau seluruh hasilnya; dihitung bila minimal satu anggota mengusahakan budidaya.", "Per tahun"),
+            ("Pembudidaya ikan", "Orang atau kelompok yang memelihara, membesarkan, dan/atau membiakkan ikan serta memanen hasilnya dalam lingkungan terkontrol.", "Per tahun"),
+            ("Jenis ikan", "Jenis organisme yang seluruh atau sebagian siklus hidupnya berada di perairan.", "Per bulan"),
+            ("Lahan budidaya", "Lahan yang dikuasai atau dikelola khusus untuk pembenihan, pendederan, atau pembesaran ikan.", "Per tahun"),
+            ("Sarana dan prasarana budidaya", "Alat, bahan, fasilitas, dan infrastruktur penunjang budidaya, seperti benih, pakan, wadah, dan saluran air.", "Per tahun"),
+            ("Pembudidayaan ikan", "Kegiatan memelihara, membesarkan, dan/atau membiakkan ikan serta memanen hasilnya.", "Per tahun"),
+            ("Produksi budidaya", "Jumlah produksi perikanan budidaya yang dihasilkan.", "Per bulan"),
+            ("Nilai produksi budidaya", "Jumlah rupiah produksi perikanan budidaya yang dihasilkan.", "Per bulan"),
+        ], columns=["Variabel", "Definisi", "Referensi waktu"]))
+        insight("<b>Catatan:</b> data di dashboard ini berasal dari sumber yang tercantum pada tab <i>Sumber Data</i>. "
+                "Hasil survei di atas dijadwalkan disajikan pada Agustus–September 2027, sehingga belum menjadi sumber data dashboard. "
+                f'Informasi ringkas ini diambil dari halaman <a class="rks-lnk" href="{RKS_URL}" target="_blank" rel="noopener noreferrer">Romantik BPS</a>; '
+                "bila ada perbedaan, dokumen di Romantik yang menjadi rujukan.")
     with t_kamus:
         lead("Daftar variabel yang dipakai di dashboard beserta arti, satuan, dan sumbernya.")
         kamus = pd.DataFrame([
@@ -2203,8 +2341,8 @@ if pi == 7:
             ("Keterbatasan", "Koordinat peta adalah titik pusat perkiraan wilayah."),
         ]
         st.markdown('<div class="mg">' + "".join(
-            f'<div class="mc"><span class="mn">{i:02d}</span><div><b>{t_}</b><p>{d_}</p></div></div>'
-            for i, (t_, d_) in enumerate(_mt, 1)) + '</div>', unsafe_allow_html=True)
+            f'<div class="mc"><div><b>{t_}</b><p>{d_}</p></div></div>'
+            for t_, d_ in _mt) + '</div>', unsafe_allow_html=True)
         d1, d2 = st.columns(2)
         d1.download_button("Unduh fitur aktif (CSV)",
                            feat.drop(columns=[c for c in feat.columns if c.startswith("sh::")]).to_csv(index=False).encode(),
